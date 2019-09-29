@@ -41,6 +41,7 @@ describe('Cart API', () => {
     it.todo('should add an item to the cart when requested with HTTP POST');
 
     it('should list all of the items in the cart when requested with HTTP GET', async () => {
+      // TODO: assert against items once above test is complete
       const { body } = await createCart(server);
 
       const itemsResponse = await request(server)
@@ -52,8 +53,15 @@ describe('Cart API', () => {
     });
 
     it.todo('should remove all items when requested with HTTP PUT and an empty array in the body');
-    it.todo('should respond with HTTP 400 when the cart ID is missing');
-    it.todo('should respond with HTTP 404 when the cart cannot be found');
+
+    it('should respond with HTTP 404 when the cart cannot be found', async () => {
+      const itemsResponse = await request(server)
+        .get(`/carts/missing_id/items`)
+        .set('Accept', 'application/json');
+
+      expect(itemsResponse.status).toBe(404);
+    });
+
     it.todo('should respond with HTTP 400 when the item to add is invalid');
     it.todo('should respond with HTTP 422 when the item to add is not recognised');
   });
