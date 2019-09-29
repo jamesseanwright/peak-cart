@@ -38,7 +38,33 @@ describe('Cart API', () => {
   });
 
   describe('/carts/:id/items', () => {
-    it.todo('should add an item to the cart when requested with HTTP POST');
+    it('should add an item to the cart when requested with HTTP PATCH', async () => {
+      const { body } = await createCart(server);
+
+      const addItemResponse = await request(server)
+        .patch(`/carts/${body.id}/items`)
+        .send({ id: 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8' })
+        .set('Accept', 'application/json');
+
+      expect(addItemResponse.status).toBe(200);
+
+      const getItemsResponse = await request(server)
+        .get(`/carts/${body.id}/items`)
+        .set('Accept', 'application/json');
+
+      expect(getItemsResponse.status).toBe(200);
+
+      expect(getItemsResponse.body as Item[]).toEqual([
+        {
+          id:'a9e9c933-eda2-4f45-92c0-33d6c1b495d8',
+          title: 'The Testaments',
+          price: {
+            currencyCode: 'GBP',
+            amount: '10.00',
+          },
+        },
+      ]);
+    });
 
     it('should list all of the items in the cart when requested with HTTP GET', async () => {
       // TODO: assert against items once above test is complete
