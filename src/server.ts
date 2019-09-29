@@ -1,6 +1,6 @@
 import express from 'express';
-import createInMemoryDataStore, { DataStore, isPopulated } from './data/dataStore';
-import { Cart } from './data/cart';
+import { DataStore, isPopulated } from './data/dataStore';
+import { Cart, cartStore } from './data/cart';
 
 const createErrorBody = (errorMessage: string) => ({
   errorMessage,
@@ -33,9 +33,7 @@ const createServer = () => {
 
   server.use(
     '/carts',
-    createCartRouter(
-      createInMemoryDataStore<Cart>(),
-    ),
+    createCartRouter(cartStore),
   );
 
   return server;

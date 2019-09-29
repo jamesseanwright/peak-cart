@@ -1,5 +1,3 @@
-// TODO: better name to suggest writing?
-
 import uuid from 'uuid/v4';
 
 export interface Record<TModel> {
@@ -20,7 +18,7 @@ export interface Retrieval<TModel> {
  * the call sites across the app. */
 export interface DataStore<TModel> {
   getById(id: string): Promise<Retrieval<TModel>>;
-  save(data: TModel): Promise<Record<TModel>>;
+  save(data: TModel, id?: string): Promise<Record<TModel>>;
 }
 
 /* Workaround to avoid '!' operator when
@@ -41,9 +39,7 @@ const createInMemoryDataStore = <TModel>(): DataStore<TModel> => {
       });
     },
 
-    save(model: TModel) {
-      const id = uuid();
-
+    save(model: TModel, id = uuid()) {
       const record = {
         id,
         model,
