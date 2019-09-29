@@ -6,9 +6,9 @@ const createCartRouter = (carts: DataStore<Cart>) => {
   const cartRouter = express.Router();
 
   cartRouter.post('/', async (req, res) => {
-    const cart = await carts.save({ items: [] });
+    const { id } = await carts.save({ items: [] });
 
-    res.status(201).json(cart);
+    res.status(201).json({ id });
   });
 
   return cartRouter;
