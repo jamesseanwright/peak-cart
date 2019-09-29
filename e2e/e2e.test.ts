@@ -65,7 +65,7 @@ describe('Cart API', () => {
       ]);
     });
 
-    it('should list an empty array when it contains no items and requested with HTTP GET', async () => {
+    it('should response with an empty array when it contains no items and requested with HTTP GET', async () => {
       const { body } = await createCart(server);
 
       const itemsResponse = await request(server)
@@ -76,7 +76,37 @@ describe('Cart API', () => {
       expect(itemsResponse.body as Item[]).toEqual([]);
     });
 
-    it.todo('should remove all items when requested with HTTP PUT and an empty array in the body');
+    it('should remove all items when requested with HTTP PUT and an empty array in the body', async () => {
+      const { body } = await createCart(server);
+
+      const addItemResponse = await request(server)
+        .patch(`/carts/${body.id}/items`)
+        .send({ id: 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8' })
+        .set('Accept', 'application/json');
+
+      expect(addItemResponse.status).toBe(200);
+
+      const postAddCartResponse = await request(server)
+        .get(`/carts/${body.id}/items`)
+        .set('Accept', 'application/json');
+
+      expect(postAddCartResponse.status).toBe(200);
+      expect((postAddCartResponse.body as Item[])[0].title).toBe('The Testaments');
+
+      const clearItemsResponse = await request(server)
+        .put(`/carts/${body.id}/items`)
+        .send({ items: [] })
+        .set('Accept', 'application/json');
+
+      expect(clearItemsResponse.status).toBe(200);
+
+      const postClearCartResponse = await request(server)
+        .get(`/carts/${body.id}/items`)
+        .set('Accept', 'application/json');
+
+      expect(postClearCartResponse.status).toBe(200);
+      expect((postAddCartResponse.body as Item[]).length).toBe(0);
+    });
 
     it('should respond with HTTP 404 when the cart cannot be found', async () => {
       const itemsResponse = await request(server)
