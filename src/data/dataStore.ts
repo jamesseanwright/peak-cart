@@ -21,7 +21,7 @@ export class MissingRecordError extends Error {
 /* Note that we use Promises for
  * all implementations, so we can
  * easily replace the in-memory
- * data source with another connector
+ * data source with an async connector
  * without having to refactor all of
  * the call sites across the app. */
 export interface DataStore<TModel> {
