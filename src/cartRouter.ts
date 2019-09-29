@@ -1,86 +1,80 @@
-import express from 'express';
-import { DataStore, isPopulated } from './data/dataStore';
+import express, { Request, Response } from 'express';
+import { DataStore, MissingRecordError } from './data/dataStore';
 import { Cart } from './data/cart';
 import { Item } from './data/item';
 
-const createErrorMessageBody = (errorMessage: string) => ({
-  errorMessage,
+const createErrorBody = (error: Error) => ({
+  error,
 });
+
+export class BadRequestError extends Error {}
+
+const errorCodes = new Map<any, number>([
+  [MissingRecordError, 404],
+  [BadRequestError, 400],
+]);
+
+/* There are some instances in which
+ * we need to report a different error
+ * to the one we have received. */
+const mapToError = (ErrorConstructor: typeof Error) =>
+  (e: Error) => Promise.reject(new ErrorConstructor(e.message));
+
+const validateEmptyItems = (items: never[]) =>
+  items.length === 0
+    ? Promise.resolve()
+    : Promise.reject(new BadRequestError('Items array must be empty'));
+
+type PromiseHandler = (req: Request, res: Response) => Promise<unknown>;
+
+const promiseRoute = (handler: PromiseHandler) =>
+  (req: Request, res: Response) =>
+    handler(req, res)
+      .catch((error: Error) => {
+        const status = errorCodes.get(error.constructor) || 500;
+
+        res.status(status).send(createErrorBody(error));
+      });
 
 const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
   const cartRouter = express.Router();
 
-  cartRouter.post('/', async (req, res) => {
-    const { id } = await carts.save({ items: [] });
+  cartRouter.post('/', promiseRoute((req, res) =>
+    carts.save({ items: [] })
+      .then(({ id }) => res.status(201).json({ id }))
+  ));
 
-    res.status(201).json({ id });
-  });
+  cartRouter.get('/:id/items', promiseRoute((req, res) =>
+    carts.getById(req.params.id)
+      .then(cart => Promise.all(
+        cart.model.items.map(({ id }) => items.getById(id)),
+      ))
+      .then(records => records.map(({ model }) => model))
+      .then(items => res.status(200).json(items))
+  ));
 
-  cartRouter.get('/:id/items', async (req, res) => {
-    const { hasRecord: hasCart, record: cart } = await carts.getById(req.params.id);
-
-    if (!isPopulated(hasCart, cart)) {
-      res.status(404).json(createErrorMessageBody('Cart not found'));
-      return;
-    }
-
-    const itemRetrievals = await Promise.all(
-      cart.model.items.map(({ id }) => items.getById(id)),
-    );
-
-    const response = itemRetrievals.map(({ record }) => (record || {}).model);
-
-    res.status(200).json(response);
-  });
-
-  cartRouter.patch('/:id/items', async (req, res) => {
-    const { hasRecord: hasCart, record: cart } = await carts.getById(req.params.id);
-
-    if (!isPopulated(hasCart, cart)) {
-      res.status(404).json(createErrorMessageBody('Cart not found'));
-      return;
-    }
-
-    const { hasRecord: hasItem, record: item } = await items.getById(req.body.id);
-
-    if (!isPopulated(hasItem, item)) {
-      res.status(400).json(createErrorMessageBody('Item not found'));
-      return;
-    }
-
-    const nextCart = {
+  cartRouter.patch('/:id/items', promiseRoute((req, res) =>
+    Promise.all([
+      carts.getById(req.params.id),
+      items.getById(req.body.id).catch(mapToError(BadRequestError)),
+    ]).then(([cart, { id }]) => carts.save({
       items: [
         ...cart.model.items,
-        { id: item.id },
+        { id },
       ],
-    };
+    }, cart.id))
+    .then(() => res.status(204).send())
+  ));
 
-    await carts.save(nextCart, cart.id);
-
-    res.status(204).send();
-  });
-
-  cartRouter.put('/:id/items', async (req, res) => {
-    const { hasRecord: hasCart, record: cart } = await carts.getById(req.params.id);
-
-    if (!isPopulated(hasCart, cart)) {
-      res.status(404).json(createErrorMessageBody('Cart not found'));
-      return;
-    }
-
-    if (req.body.items.length > 0) {
-      res.status(400).json(createErrorMessageBody('Items array must be empty'));
-      return;
-    }
-
-    const nextCart = {
+  cartRouter.put('/:id/items', promiseRoute((req, res) =>
+    Promise.all([
+      carts.getById(req.params.id),
+      validateEmptyItems(req.body.items),
+    ]).then(([{ id }]) => carts.save({
       items: [],
-    };
-
-    await carts.save(nextCart, cart.id);
-
-    res.status(204).send();
-  });
+    }, id))
+    .then(() => res.status(204).send())
+  ));
 
   return cartRouter;
 };

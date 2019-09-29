@@ -25,11 +25,6 @@ export interface DataStore<TModel> {
   save(data: TModel, id?: string): Promise<Record<TModel>>;
 }
 
-/* Workaround to avoid '!' operator when
- * asserting presence of retrieval result */
-export const isPopulated = <TModel>(hasRecord: boolean, record?: Record<TModel>): record is Record<TModel> =>
-  hasRecord;
-
 const createInMemoryDataStore = <TModel>(): DataStore<TModel> => {
   const records = new Map<string, Record<TModel>>();
 
