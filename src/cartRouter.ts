@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { DataStore, MissingRecordError } from './data/dataStore';
+import { DataStore } from './data/dataStore';
 import { Cart } from './data/cart';
 import { Item } from './data/item';
 
