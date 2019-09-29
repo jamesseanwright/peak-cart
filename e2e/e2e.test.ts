@@ -1,6 +1,7 @@
 import { Application } from 'express';
 import request from 'supertest';
-import createServer, { Cart } from '../src/server';
+import createServer from '../src/server';
+import { Cart } from '../src/data/cart';
 
 const uuidFormat = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/i;
 
