@@ -1,7 +1,15 @@
 // TODO: better name to suggest writing?
 
-export interface Model {
+import uuid from 'uuid/v4';
+
+export interface Record<TModel> {
   id: string;
+  model: TModel;
+}
+
+export interface Retrival<TModel> {
+  hasRecord: boolean;
+  record?: Record<TModel>;
 }
 
 /* Note that we use Promises for
@@ -10,15 +18,36 @@ export interface Model {
  * data source with another connector
  * without having to refactor all of
  * the call sites across the app. */
-export interface DataSource<TModel extends Model> {
-  getById(id: string): Promise<TModel>;
-  save(data: Omit<TModel, 'id'>): Promise<TModel>;
+export interface DataSource<TModel> {
+  getById(id: string): Promise<Retrival<TModel>>;
+  save(data: TModel): Promise<Record<TModel>>;
 }
 
-const createInMemoryDataSource = <TModel extends Model>(): DataSource<TModel> => {
+const createInMemoryDataSource = <TModel>(): DataSource<TModel> => {
+  const records = new Map<string, Record<TModel>>();
+
   return {
-    getById: (id: string) => Promise.resolve({} as TModel),
-    save: (data: Omit<TModel, 'id'>) => Promise.resolve({} as TModel),
+    getById(id: string) {
+      const record = records.get(id);
+
+      return Promise.resolve({
+        hasRecord: !!record,
+        record,
+      });
+    },
+
+    save(model: TModel) {
+      const id = uuid();
+
+      const record = {
+        id,
+        model,
+      };
+
+      records.set(id, record);
+
+      return Promise.resolve(record);
+    },
   };
 };
 

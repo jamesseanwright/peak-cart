@@ -8,17 +8,17 @@ describe('createInMemoryDataSource', () => {
     dataSource = createInMemoryDataSource();
   });
 
-  describe('save and get', () => {
+  describe('save and getById', () => {
     it('should save the data, along with the generated ID, to memory', async () => {
       const cart = {
         items: [],
       };
 
-      const savedModel = await dataSource.save(cart);
-      const retrivedModel = await dataSource.getById(savedModel.id);
+      const savedRecord = await dataSource.save(cart);
+      const retrieval = await dataSource.getById(savedRecord.id);
 
-      expect(savedModel.items).toBe(cart.items);
-      expect(savedModel).toBe(retrivedModel);
+      expect(savedRecord.model.items).toBe(cart.items);
+      expect(savedRecord).toBe(retrieval.record);
     });
   });
 });
