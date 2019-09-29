@@ -108,6 +108,17 @@ describe('Cart API', () => {
       expect((postClearCartResponse.body as Item[]).length).toBe(0);
     });
 
+    it('should respond with HTTP 400 when requested with HTTP PUT and a non-empty array', async () => {
+      const { body } = await createCart(server);
+
+      const clearItemsResponse = await request(server)
+        .put(`/carts/${body.id}/items`)
+        .send({ items: [{ id: 'some_id' }] })
+        .set('Accept', 'application/json');
+
+      expect(clearItemsResponse.status).toBe(400);
+    });
+
     it('should respond with HTTP 404 when the cart cannot be found', async () => {
       const itemsResponse = await request(server)
         .get(`/carts/missing_id/items`)

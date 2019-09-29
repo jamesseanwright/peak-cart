@@ -69,6 +69,11 @@ const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
       return;
     }
 
+    if (req.body.items.length > 0) {
+      res.status(400).json(createErrorBody('Items array must be empty'));
+      return;
+    }
+
     const nextCart = {
       items: [],
     };
