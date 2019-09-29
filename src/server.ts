@@ -58,11 +58,24 @@ const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
 
     await carts.save(nextCart, cart.id);
 
-    res.status(200).json({});
+    res.status(200).json({}); // TODO: message!
   });
 
   cartRouter.put('/:id/items', async (req, res) => {
+    const { hasRecord: hasCart, record: cart } = await carts.getById(req.params.id);
 
+    if (!isPopulated(hasCart, cart)) {
+      res.status(404).json(createErrorBody('Cart not found'));
+      return;
+    }
+
+    const nextCart = {
+      items: [],
+    };
+
+    await carts.save(nextCart, cart.id);
+
+    res.status(200).json({}); // TODO: message!
   });
 
   return cartRouter;

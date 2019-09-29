@@ -105,7 +105,7 @@ describe('Cart API', () => {
         .set('Accept', 'application/json');
 
       expect(postClearCartResponse.status).toBe(200);
-      expect((postAddCartResponse.body as Item[]).length).toBe(0);
+      expect((postClearCartResponse.body as Item[]).length).toBe(0);
     });
 
     it('should respond with HTTP 404 when the cart cannot be found', async () => {
