@@ -1,6 +1,10 @@
 import express from 'express';
-import createInMemoryDataStore, { DataStore } from './data/dataStore';
+import createInMemoryDataStore, { DataStore, isPopulated } from './data/dataStore';
 import { Cart } from './data/cart';
+
+const createErrorBody = (errorMessage: string) => ({
+  errorMessage,
+});
 
 const createCartRouter = (carts: DataStore<Cart>) => {
   const cartRouter = express.Router();
@@ -12,9 +16,13 @@ const createCartRouter = (carts: DataStore<Cart>) => {
   });
 
   cartRouter.get('/:id/items', async (req, res) => {
-    const retrieval = await carts.getById(req.params.id);
+    const { hasRecord, record } = await carts.getById(req.params.id);
 
-    res.status(200).json(retrieval.record!.model.items);
+    if (isPopulated(hasRecord, record)) {
+      res.status(200).json(record.model.items);
+    } else {
+      res.status(404).json(createErrorBody('Cart not found'));
+    }
   });
 
   return cartRouter;

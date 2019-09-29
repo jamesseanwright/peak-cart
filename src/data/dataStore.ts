@@ -7,7 +7,7 @@ export interface Record<TModel> {
   model: TModel;
 }
 
-export interface Retrival<TModel> {
+export interface Retrieval<TModel> {
   hasRecord: boolean;
   record?: Record<TModel>;
 }
@@ -19,9 +19,14 @@ export interface Retrival<TModel> {
  * without having to refactor all of
  * the call sites across the app. */
 export interface DataStore<TModel> {
-  getById(id: string): Promise<Retrival<TModel>>;
+  getById(id: string): Promise<Retrieval<TModel>>;
   save(data: TModel): Promise<Record<TModel>>;
 }
+
+/* Workaround to avoid '!' operator when
+ * asserting presence of retrieval result */
+export const isPopulated = <TModel>(hasRecord: boolean, record?: Record<TModel>): record is Record<TModel> =>
+  hasRecord;
 
 const createInMemoryDataStore = <TModel>(): DataStore<TModel> => {
   const records = new Map<string, Record<TModel>>();
