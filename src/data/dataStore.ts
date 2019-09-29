@@ -8,9 +8,10 @@ export interface Record<TModel> extends Entity {
   model: TModel;
 }
 
-export interface Retrieval<TModel> {
-  hasRecord: boolean;
-  record?: Record<TModel>;
+export class MissingRecordError extends Error {
+  constructor(id: string) {
+    super(`Cannot find record with ID "${id}"`);
+  }
 }
 
 /* Note that we use Promises for
@@ -20,7 +21,7 @@ export interface Retrieval<TModel> {
  * without having to refactor all of
  * the call sites across the app. */
 export interface DataStore<TModel> {
-  getById(id: string): Promise<Retrieval<TModel>>;
+  getById(id: string): Promise<Record<TModel>>;
   save(data: TModel, id?: string): Promise<Record<TModel>>;
 }
 
@@ -34,12 +35,9 @@ const createInMemoryDataStore = <TModel>(): DataStore<TModel> => {
 
   return {
     getById(id: string) {
-      const record = records.get(id);
-
-      return Promise.resolve({
-        hasRecord: !!record,
-        record,
-      });
+      return records.has(id)
+        ? Promise.resolve(records.get(id)!) // TODO: avoid bang
+        : Promise.reject(new MissingRecordError(id));
     },
 
     save(model: TModel, id = uuid()) {

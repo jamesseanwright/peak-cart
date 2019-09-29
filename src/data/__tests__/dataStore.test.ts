@@ -1,4 +1,4 @@
-import createInMemoryDataStore, { DataStore } from '../dataStore';
+import createInMemoryDataStore, { DataStore, MissingRecordError } from '../dataStore';
 import { Cart } from '../cart';
 
 describe('createInMemoryDataStore', () => {
@@ -15,19 +15,20 @@ describe('createInMemoryDataStore', () => {
       };
 
       const savedRecord = await dataSource.save(cart);
-      const retrieval = await dataSource.getById(savedRecord.id);
+      const retrievedRecord = await dataSource.getById(savedRecord.id);
 
       expect(savedRecord.model.items).toBe(cart.items);
-      expect(savedRecord).toBe(retrieval.record);
+      expect(savedRecord).toBe(retrievedRecord);
     });
   });
 
   describe('getById', () => {
-    it('should return a retrieval with no record if the ID could not be found', async () => {
-      const retrieval = await dataSource.getById('no');
-
-      expect(retrieval.hasRecord).toBe(false);
-      expect(retrieval.record).toBeUndefined();
+    it('should reject with an error if the record could not be found', () => {
+      return dataSource.getById('no')
+        .catch(e => {
+          expect(e).toBeInstanceOf(MissingRecordError);
+          expect(e.message).toBe('Cannot find record with ID "no"');
+        });
     });
   });
 });
