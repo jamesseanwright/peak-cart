@@ -21,4 +21,13 @@ describe('createInMemoryDataStore', () => {
       expect(savedRecord).toBe(retrieval.record);
     });
   });
+
+  describe('getById', () => {
+    it('should return a retrieval with no record if the ID could not be found', async () => {
+      const retrieval = await dataSource.getById('no');
+
+      expect(retrieval.hasRecord).toBe(false);
+      expect(retrieval.record).toBeUndefined();
+    });
+  });
 });
