@@ -96,8 +96,6 @@ describe('Cart API', () => {
 
       expect(addItemResponse.status).toBe(400);
     });
-
-    it.todo('should respond with HTTP 422 when the item to add is not recognised');
   });
 
   describe('/carts/:id/items/:id', () => {
