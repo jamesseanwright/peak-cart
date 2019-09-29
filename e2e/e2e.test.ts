@@ -46,7 +46,7 @@ describe('Cart API', () => {
         .send({ id: 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8' })
         .set('Accept', 'application/json');
 
-      expect(addItemResponse.status).toBe(200);
+      expect(addItemResponse.status).toBe(204);
 
       const getItemsResponse = await request(server)
         .get(`/carts/${body.id}/items`)
@@ -84,7 +84,7 @@ describe('Cart API', () => {
         .send({ id: 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8' })
         .set('Accept', 'application/json');
 
-      expect(addItemResponse.status).toBe(200);
+      expect(addItemResponse.status).toBe(204);
 
       const postAddCartResponse = await request(server)
         .get(`/carts/${body.id}/items`)
@@ -98,7 +98,7 @@ describe('Cart API', () => {
         .send({ items: [] })
         .set('Accept', 'application/json');
 
-      expect(clearItemsResponse.status).toBe(200);
+      expect(clearItemsResponse.status).toBe(204);
 
       const postClearCartResponse = await request(server)
         .get(`/carts/${body.id}/items`)

@@ -3,7 +3,7 @@ import { DataStore, isPopulated } from './data/dataStore';
 import { Cart } from './data/cart';
 import { Item } from './data/item';
 
-const createErrorBody = (errorMessage: string) => ({
+const createErrorMessageBody = (errorMessage: string) => ({
   errorMessage,
 });
 
@@ -20,7 +20,7 @@ const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
     const { hasRecord: hasCart, record: cart } = await carts.getById(req.params.id);
 
     if (!isPopulated(hasCart, cart)) {
-      res.status(404).json(createErrorBody('Cart not found'));
+      res.status(404).json(createErrorMessageBody('Cart not found'));
       return;
     }
 
@@ -37,14 +37,14 @@ const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
     const { hasRecord: hasCart, record: cart } = await carts.getById(req.params.id);
 
     if (!isPopulated(hasCart, cart)) {
-      res.status(404).json(createErrorBody('Cart not found'));
+      res.status(404).json(createErrorMessageBody('Cart not found'));
       return;
     }
 
     const { hasRecord: hasItem, record: item } = await items.getById(req.body.id);
 
     if (!isPopulated(hasItem, item)) {
-      res.status(400).json(createErrorBody('Item not found'));
+      res.status(400).json(createErrorMessageBody('Item not found'));
       return;
     }
 
@@ -57,19 +57,19 @@ const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
 
     await carts.save(nextCart, cart.id);
 
-    res.status(200).json({}); // TODO: message!
+    res.status(204).send();
   });
 
   cartRouter.put('/:id/items', async (req, res) => {
     const { hasRecord: hasCart, record: cart } = await carts.getById(req.params.id);
 
     if (!isPopulated(hasCart, cart)) {
-      res.status(404).json(createErrorBody('Cart not found'));
+      res.status(404).json(createErrorMessageBody('Cart not found'));
       return;
     }
 
     if (req.body.items.length > 0) {
-      res.status(400).json(createErrorBody('Items array must be empty'));
+      res.status(400).json(createErrorMessageBody('Items array must be empty'));
       return;
     }
 
@@ -79,7 +79,7 @@ const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
 
     await carts.save(nextCart, cart.id);
 
-    res.status(200).json({}); // TODO: message!
+    res.status(204).send();
   });
 
   return cartRouter;
