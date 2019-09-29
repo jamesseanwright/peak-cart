@@ -18,12 +18,12 @@ export interface Retrival<TModel> {
  * data source with another connector
  * without having to refactor all of
  * the call sites across the app. */
-export interface DataSource<TModel> {
+export interface DataStore<TModel> {
   getById(id: string): Promise<Retrival<TModel>>;
   save(data: TModel): Promise<Record<TModel>>;
 }
 
-const createInMemoryDataSource = <TModel>(): DataSource<TModel> => {
+const createInMemoryDataStore = <TModel>(): DataStore<TModel> => {
   const records = new Map<string, Record<TModel>>();
 
   return {
@@ -51,4 +51,4 @@ const createInMemoryDataSource = <TModel>(): DataSource<TModel> => {
   };
 };
 
-export default createInMemoryDataSource;
+export default createInMemoryDataStore;

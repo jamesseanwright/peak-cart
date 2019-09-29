@@ -2,6 +2,7 @@ import { Application } from 'express';
 import request from 'supertest';
 import createServer from '../src/server';
 import { Cart } from '../src/data/cart';
+import { Record } from '../src/data/dataStore';
 
 const uuidFormat = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/i;
 
@@ -19,7 +20,7 @@ describe('Cart API', () => {
         .set('Accept', 'application/json');
 
       // TODO: unify this type assertion with app-wide function
-      const body = response.body as unknown as Cart;
+      const body = response.body as unknown as Record<Cart>;
 
       expect(response.status).toBe(201);
       expect(body.id).toMatch(uuidFormat);

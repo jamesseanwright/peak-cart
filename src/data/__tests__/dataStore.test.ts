@@ -1,11 +1,11 @@
-import createInMemoryDataSource, { DataSource } from '../dataSource';
+import createInMemoryDataStore, { DataStore } from '../dataStore';
 import { Cart } from '../cart';
 
-describe('createInMemoryDataSource', () => {
-  let dataSource: DataSource<Cart>;
+describe('createInMemoryDataStore', () => {
+  let dataSource: DataStore<Cart>;
 
   beforeEach(() => {
-    dataSource = createInMemoryDataSource();
+    dataSource = createInMemoryDataStore();
   });
 
   describe('save and getById', () => {
