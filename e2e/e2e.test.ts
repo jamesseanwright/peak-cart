@@ -65,8 +65,7 @@ describe('Cart API', () => {
       ]);
     });
 
-    it('should list all of the items in the cart when requested with HTTP GET', async () => {
-      // TODO: assert against items once above test is complete
+    it('should list an empty array when it contains no items and requested with HTTP GET', async () => {
       const { body } = await createCart(server);
 
       const itemsResponse = await request(server)
@@ -87,7 +86,17 @@ describe('Cart API', () => {
       expect(itemsResponse.status).toBe(404);
     });
 
-    it.todo('should respond with HTTP 400 when the item to add is invalid');
+    it('should respond with HTTP 400 when the item to add is unrecognised', async () => {
+      const { body } = await createCart(server);
+
+      const addItemResponse = await request(server)
+        .patch(`/carts/${body.id}/items`)
+        .send({ id: 'foo' })
+        .set('Accept', 'application/json');
+
+      expect(addItemResponse.status).toBe(400);
+    });
+
     it.todo('should respond with HTTP 422 when the item to add is not recognised');
   });
 
