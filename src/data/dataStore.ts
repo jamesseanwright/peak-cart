@@ -9,8 +9,12 @@ export interface Record<TModel> extends Entity {
 }
 
 export class MissingRecordError extends Error {
-  constructor(id: string) {
+  constructor(id?: string) {
     super(`Cannot find record with ID "${id}"`);
+  }
+
+  get httpStatus() {
+    return 404;
   }
 }
 

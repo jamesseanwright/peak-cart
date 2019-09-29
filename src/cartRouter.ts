@@ -7,17 +7,16 @@ const createErrorBody = (error: Error) => ({
   error,
 });
 
-export class BadRequestError extends Error {}
-
-const errorCodes = new Map<any, number>([
-  [MissingRecordError, 404],
-  [BadRequestError, 400],
-]);
+export class BadRequestError extends Error {
+  get httpStatus() {
+    return 400;
+  }
+}
 
 /* There are some instances in which
  * we need to report a different error
  * to the one we have received. */
-const mapToError = (ErrorConstructor: typeof Error) =>
+const mapToError = (ErrorConstructor: new (message: string) => Error) =>
   (e: Error) => Promise.reject(new ErrorConstructor(e.message));
 
 const validateEmptyItems = (items: never[]) =>
@@ -30,10 +29,10 @@ type PromiseHandler = (req: Request, res: Response) => Promise<unknown>;
 const promiseRoute = (handler: PromiseHandler) =>
   (req: Request, res: Response) =>
     handler(req, res)
-      .catch((error: Error) => {
-        const status = errorCodes.get(error.constructor) || 500;
+      .catch(error => {
+        const { httpStatus = 500 } = error;
 
-        res.status(status).send(createErrorBody(error));
+        res.status(httpStatus).send(createErrorBody(error));
       });
 
 const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
