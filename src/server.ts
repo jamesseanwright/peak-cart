@@ -11,6 +11,12 @@ const createCartRouter = (carts: DataStore<Cart>) => {
     res.status(201).json({ id });
   });
 
+  cartRouter.get('/:id/items', async (req, res) => {
+    const retrieval = await carts.getById(req.params.id);
+
+    res.status(200).json(retrieval.record!.model.items);
+  });
+
   return cartRouter;
 };
 

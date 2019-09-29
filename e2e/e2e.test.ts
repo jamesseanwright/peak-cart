@@ -3,8 +3,23 @@ import request from 'supertest';
 import createServer from '../src/server';
 import { Cart } from '../src/data/cart';
 import { Record } from '../src/data/dataStore';
+import { Item } from '../src/data/item';
 
 const uuidFormat = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/i;
+
+const createCart = async (server: Application) => {
+  const response = await request(server)
+    .post('/carts')
+    .set('Accept', 'application/json');
+
+  // TODO: unify this type assertion with app-wide function
+  const body = response.body as Record<Cart>;
+
+  return {
+    status: response.status,
+    body,
+  };
+};
 
 describe('Cart API', () => {
   let server: Application;
@@ -15,21 +30,27 @@ describe('Cart API', () => {
 
   describe('/carts', () => {
     it('should create a new cart when the endpoint is requested with HTTP POST', async () => {
-      const response = await request(server)
-        .post('/carts')
-        .set('Accept', 'application/json');
+      const { status, body } = await createCart(server);
 
-      // TODO: unify this type assertion with app-wide function
-      const body = response.body as unknown as Record<Cart>;
-
-      expect(response.status).toBe(201);
+      expect(status).toBe(201);
       expect(body.id).toMatch(uuidFormat);
     });
   });
 
   describe('/carts/:id/items', () => {
-    it.todo('should list all of the items in the cart when requested with HTTP GET');
     it.todo('should add an item to the cart when requested with HTTP POST');
+
+    it('should list all of the items in the cart when requested with HTTP GET', async () => {
+      const { body } = await createCart(server);
+
+      const itemsResponse = await request(server)
+        .get(`/carts/${body.id}/items`)
+        .set('Accept', 'application/json');
+
+      expect(itemsResponse.status).toBe(200);
+      expect(itemsResponse.body as Item[]).toEqual([]);
+    });
+
     it.todo('should remove all items when requested with HTTP PUT and an empty array in the body');
     it.todo('should respond with HTTP 400 when the cart ID is missing');
     it.todo('should respond with HTTP 404 when the cart cannot be found');
