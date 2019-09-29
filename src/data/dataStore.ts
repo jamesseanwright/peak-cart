@@ -1,7 +1,10 @@
 import uuid from 'uuid/v4';
 
-export interface Record<TModel> {
+export interface Entity {
   id: string;
+}
+
+export interface Record<TModel> extends Entity {
   model: TModel;
 }
 

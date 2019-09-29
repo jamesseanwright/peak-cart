@@ -1,8 +1,7 @@
-import { Item } from "./item";
-import createInMemoryDataStore from "./dataStore";
+import createInMemoryDataStore, { Entity } from "./dataStore";
 
 export interface Cart {
-  items: Item[];
+  items: Entity[];
 }
 
 export const cartStore = createInMemoryDataStore<Cart>();

@@ -18,13 +18,20 @@ const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
   });
 
   cartRouter.get('/:id/items', async (req, res) => {
-    const { hasRecord, record } = await carts.getById(req.params.id);
+    const { hasRecord: hasCart, record: cart } = await carts.getById(req.params.id);
 
-    if (isPopulated(hasRecord, record)) {
-      res.status(200).json(record.model.items);
-    } else {
+    if (!isPopulated(hasCart, cart)) {
       res.status(404).json(createErrorBody('Cart not found'));
+      return;
     }
+
+    const itemRetrievals = await Promise.all(
+      cart.model.items.map(({ id }) => items.getById(id)),
+    );
+
+    const response = itemRetrievals.map(({ record }) => (record || {}).model);
+
+    res.status(200).json(response);
   });
 
   cartRouter.patch('/:id/items', async (req, res) => {
@@ -45,7 +52,7 @@ const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
     const nextCart = {
       items: [
         ...cart.model.items,
-        item.model,
+        { id: item.id },
       ],
     };
 
