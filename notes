@@ -1,0 +1,3 @@
+Notes:
+
+- Data store uses `Map`, which could result in memory leaks. An LRU mechanism could prune unused baskets although this could also lead to unintended effects for the user downstream
