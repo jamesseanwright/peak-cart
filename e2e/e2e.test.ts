@@ -78,6 +78,7 @@ describe('Cart API', () => {
 
       expect(getItemsResponse.body as Item[]).toEqual([
         {
+          id: 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8',
           title: 'The Testaments',
           price: {
             currencyCode: 'GBP',

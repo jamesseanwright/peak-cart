@@ -46,7 +46,12 @@ const createCartRouter = (
         .then(cart =>
           Promise.all(cart.model.items.map(({ id }) => items.getById(id))),
         )
-        .then(records => records.map(({ model }) => model))
+        .then(records =>
+          records.map(({ id, model }) => ({
+            id,
+            ...model,
+          })),
+        )
         .then(items => res.status(200).json(items)),
     ),
   );
