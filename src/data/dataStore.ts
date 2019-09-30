@@ -35,7 +35,7 @@ const createInMemoryDataStore = <TModel>(): DataStore<TModel> => {
   return {
     getById(id: string) {
       return records.has(id)
-        ? Promise.resolve(records.get(id)!) // TODO: avoid bang
+        ? Promise.resolve(records.get(id)!)
         : Promise.reject(new MissingRecordError(id));
     },
 
