@@ -18,6 +18,10 @@ Creates a new cart, returning an ID:
 }
 ```
 
+#### HTTP status codes
+
+* 200 - cart was successfully created
+
 ### `GET /carts/:cartId/items`
 
 Retrieves the items stored in the requested cart:
@@ -36,6 +40,11 @@ Retrieves the items stored in the requested cart:
 ]
 ```
 
+#### HTTP status codes
+
+* 200 - items were successfully retrieved
+* 404 - cart with the requested ID could not be found
+
 ### `PATCH /carts/:cartId/items`
 
 Adds the item ID to the requested cart:
@@ -51,6 +60,12 @@ Adds the item ID to the requested cart:
 ```
 
 **Note**: this endpoint will return no content, opting for a HTTP 204 (No Content) status code instead.
+
+#### HTTP status codes
+
+* 204 - item was successfully added to the cart
+* 400 - item ID to add to the cart could not be recognised
+* 404 - cart with the requested ID could not be found
 
 ### `PUT /carts/:cartId/items`
 
@@ -68,6 +83,12 @@ Replaces all the of the items in the requested cart. This currently only accepts
 
 **Note**: this endpoint will return no content, opting for a HTTP 204 (No Content) status code instead.
 
+#### HTTP status codes
+
+* 204 - items were successfully cleared from the cart
+* 400 - array of items in the request body was not empty
+* 404 - cart with the requested ID could not be found
+
 ### `DELETE /carts/:id/items/:itemId`
 
 Removes an item from the requested cart:
@@ -77,6 +98,12 @@ Removes an item from the requested cart:
 ```
 
 **Note**: this endpoint will return no content, opting for a HTTP 204 (No Content) status code instead.
+
+#### HTTP status codes
+
+* 204 - item was successfully removed from the cart
+* 400 - item ID to add to the cart could not be recognised
+* 404 - cart with the requested ID could not be found
 
 ## Running locally
 
