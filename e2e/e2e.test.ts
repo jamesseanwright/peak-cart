@@ -6,41 +6,35 @@ import { Item } from '../src/data/item';
 
 const uuidFormat = /\b[0-9a-f]{8}\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\b[0-9a-f]{12}\b/i;
 
-const createCart = async (server: Application) => {
-  const { status, body } = await request(server)
+const createCart = (server: Application) =>
+  request(server)
     .post('/carts')
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json')
+    .then(({ status, body }) => ({
+      status,
+      body: body as Entity,
+    }));
 
-  return {
-    status,
-    body: body as Entity,
-  };
-};
-
-const getCartItems = async (server: Application, id: string) => {
-  const { status, body } = await request(server)
+const getCartItems = (server: Application, id: string) =>
+  request(server)
     .get(`/carts/${id}/items`)
-    .set('Accept', 'application/json');
+    .set('Accept', 'application/json')
+    .then(({ status, body }) => ({
+      status,
+      body: body as Item[],
+    }));
 
-  return {
-    status,
-    body: body as Item[]
-  }
-};
-
-const addToCart = async (server: Application, cartId: string, itemId: string) => {
-  return await request(server)
+const addToCart = (server: Application, cartId: string, itemId: string) =>
+  request(server)
     .patch(`/carts/${cartId}/items`)
     .send({ id: itemId })
     .set('Accept', 'application/json');
-};
 
-const replaceCartItems = async (server: Application, cartId: string, itemIds: string[]) => {
-  return await request(server)
+const replaceCartItems = (server: Application, cartId: string, itemIds: string[]) =>
+  request(server)
     .put(`/carts/${cartId}/items`)
     .send({ items: itemIds })
     .set('Accept', 'application/json');
-}
 
 describe('Cart API', () => {
   let server: Application;
