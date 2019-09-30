@@ -36,6 +36,11 @@ const replaceCartItems = (server: Application, cartId: string, itemIds: string[]
     .send({ items: itemIds })
     .set('Accept', 'application/json');
 
+const removeFromCart = (server: Application, cartId: string, itemId: string) =>
+  request(server)
+    .delete(`/carts/${cartId}/items/${itemId}`)
+    .set('Accept', 'application/json');
+
 describe('Cart API', () => {
   let server: Application;
 
@@ -88,10 +93,10 @@ describe('Cart API', () => {
 
       expect(addItemResponse.status).toBe(204);
 
-      const postAddCartResponse = await getCartItems(server, body.id);
+      const postAddToCartResponse = await getCartItems(server, body.id);
 
-      expect(postAddCartResponse.status).toBe(200);
-      expect((postAddCartResponse.body as Item[])[0].title).toBe('The Testaments');
+      expect(postAddToCartResponse.status).toBe(200);
+      expect((postAddToCartResponse.body as Item[])[0].title).toBe('The Testaments');
 
       const clearItemsResponse = await replaceCartItems(server, body.id, []);
 
@@ -125,10 +130,29 @@ describe('Cart API', () => {
   });
 
   describe('/carts/:id/items/:id', () => {
-    it.todo('should remove the item from the cart when requested with HTTP DELETE');
-    it.todo('should respond with HTTP 400 when the cart ID is missing');
+    it('should remove the item from the cart when requested with HTTP DELETE', async () => {
+      const { body } = await createCart(server);
+
+      await addToCart(server, body.id, 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8');
+      await addToCart(server, body.id, 'c1e435ad-f32b-4b6d-a3d4-bb6897eaa9ce');
+
+      const postAddToCartResponse = await getCartItems(server, body.id);
+
+      expect(postAddToCartResponse.body.length).toBe(2);
+      expect(postAddToCartResponse.body[0].title).toBe('The Testaments');
+      expect(postAddToCartResponse.body[1].title).toBe('Half a World Away');
+
+      const removeFromCartResponse = await removeFromCart(server, body.id, 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8');
+
+      expect(removeFromCartResponse.status).toBe(204);
+
+      const postRemoveFromCartResponse = await getCartItems(server, body.id);
+
+      expect(postRemoveFromCartResponse.body.length).toBe(1);
+      expect(postRemoveFromCartResponse.body[0].title).toBe('Half a World Away');
+    });
+
     it.todo('should respond with HTTP 404 when the cart cannot be found');
-    it.todo('should respond with HTTP 400 when the item ID is missing');
-    it.todo('should respond with HTTP 404 when the item cannot be found');
+    it.todo('should respond with HTTP 400 when the item cannot be found');
   });
 });
