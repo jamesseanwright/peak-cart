@@ -152,7 +152,12 @@ describe('Cart API', () => {
       expect(postRemoveFromCartResponse.body[0].title).toBe('Half a World Away');
     });
 
-    it.todo('should respond with HTTP 404 when the cart cannot be found');
+    it('should respond with HTTP 404 when the cart cannot be found', async () => {
+      const removeFromCartResponse = await removeFromCart(server, 'missing_basket', 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8');
+
+      expect(removeFromCartResponse.status).toBe(404);
+    });
+
     it.todo('should respond with HTTP 400 when the item cannot be found');
   });
 });
