@@ -10,7 +10,7 @@ A microservice that power the shopping cart of an online book store (read: my te
 
 Creates a new cart, returning an ID:
 
-```json
+```js
 // POST http://localhost:8000/carts
 
 {
@@ -26,7 +26,7 @@ Creates a new cart, returning an ID:
 
 Retrieves the items stored in the requested cart:
 
-```json
+```js
 // GET http://localhost:8000/carts/14ffb40c-8c47-41d5-993e-f050630ccb9c/items
 
 [
@@ -49,7 +49,7 @@ Retrieves the items stored in the requested cart:
 
 Adds the item ID to the requested cart:
 
-```json
+```js
 /* PATCH http://localhost:8000/carts/14ffb40c-8c47-41d5-993e-f050630ccb9c/items
  *
  * Request body:
@@ -71,7 +71,7 @@ Adds the item ID to the requested cart:
 
 Replaces all the of the items in the requested cart. This currently only accepts an empty array of items i.e. to empty the cart:
 
-```json
+```js
 /* PUT http://localhost:8000/carts/14ffb40c-8c47-41d5-993e-f050630ccb9c/items
  *
  * Request body:
@@ -93,7 +93,7 @@ Replaces all the of the items in the requested cart. This currently only accepts
 
 Removes an item from the requested cart:
 
-```json
+```js
 // DELETE http://localhost:8000/carts/14ffb40c-8c47-41d5-993e-f050630ccb9c/items/a9e9c933-eda2-4f45-92c0-33d6c1b495d8
 ```
 
