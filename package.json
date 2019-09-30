@@ -4,6 +4,8 @@
   "description": "A microservice for powering an e-commerce shopping cart",
   "main": "dist/index.js",
   "scripts": {
+    "build": "tsc -p .",
+    "start": "node dist/index.js",
     "format": "prettier --write jest.config.js e2e/e2e.test.ts 'src/**/*.ts'",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "jest",
