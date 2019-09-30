@@ -56,7 +56,7 @@ const createCartRouter = (
     promiseRoute((req, res) =>
       Promise.all([
         carts.getById(req.params.id),
-        items.getById(req.body.id).catch(mapToError(BadRequestError)),
+        items.getById(req.body.itemId).catch(mapToError(BadRequestError)),
       ])
         .then(([cart, { id }]) =>
           carts.save(
@@ -75,7 +75,7 @@ const createCartRouter = (
     promiseRoute((req, res) =>
       Promise.all([
         carts.getById(req.params.id),
-        validateEmptyItems(req.body.items),
+        validateEmptyItems(req.body.itemIds),
       ])
         .then(([{ id }]) =>
           carts.save(

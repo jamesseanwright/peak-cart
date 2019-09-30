@@ -27,7 +27,7 @@ const getCartItems = (server: Application, id: string) =>
 const addToCart = (server: Application, cartId: string, itemId: string) =>
   request(server)
     .patch(`/carts/${cartId}/items`)
-    .send({ id: itemId })
+    .send({ itemId })
     .set('Accept', 'application/json');
 
 const replaceCartItems = (
@@ -37,7 +37,7 @@ const replaceCartItems = (
 ) =>
   request(server)
     .put(`/carts/${cartId}/items`)
-    .send({ items: itemIds })
+    .send({ itemIds })
     .set('Accept', 'application/json');
 
 const removeFromCart = (server: Application, cartId: string, itemId: string) =>

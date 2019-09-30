@@ -54,7 +54,7 @@ Adds the item ID to the requested cart:
  *
  * Request body:
  * {
- *   "id": "a9e9c933-eda2-4f45-92c0-33d6c1b495d8"
+ *   "itemId": "a9e9c933-eda2-4f45-92c0-33d6c1b495d8"
  * }
  */
 ```
@@ -76,7 +76,7 @@ Replaces all the of the items in the requested cart. This currently only accepts
  *
  * Request body:
  * {
- *   "items": []
+ *   "itemIds": []
  * }
  */
 ```
