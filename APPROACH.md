@@ -12,7 +12,7 @@ When dealing with asynchronous code in my route handlers, I used `Promise` metho
 
 ## Persistence
 
-As per the specification, I wrote [an abstraction over JavaScript's `Map` constructor to store records in memory](/jamesseanwright/peak-cart/blob/master/src/data/dataStore.ts) and retrieve them by their ID; this resulted in two key interfaces:
+As per the specification, I wrote [an abstraction over JavaScript's `Map` constructor to store records in memory](https://github.com/jamesseanwright/peak-cart/blob/master/src/data/dataStore.ts) and retrieve them by their ID; this resulted in two key interfaces:
 
 * `Entity`: the core atom of my persistence layer, which is simply an object with an ID. This means that models can simply refer to relational data by ID, rather than storing duplicate, redundant data
 
