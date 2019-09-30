@@ -28,23 +28,26 @@ const validateEmptyItems = (items: never[]) =>
 
 type PromiseHandler = (req: Request, res: Response) => Promise<unknown>;
 
-const promiseRouteCreator = (logger: Logger) =>
-  (handler: PromiseHandler) => (
-    req: Request,
-    res: Response,
-  ) => {
-    logger(`Request for ${req.path}`);
+const promiseRouteCreator = (logger: Logger) => (handler: PromiseHandler) => (
+  req: Request,
+  res: Response,
+) => {
+  logger(`Request for ${req.path}`);
 
-    return handler(req, res).catch(error => {
-      const { httpStatus = 500, message } = error;
+  return handler(req, res).catch(error => {
+    const { httpStatus = 500, message } = error;
 
-      logger(`Error: ${message}`);
+    logger(`Error: ${message}`);
 
-      res.status(httpStatus).json(createErrorBody(error.message));
-    });
-  };
+    res.status(httpStatus).json(createErrorBody(error.message));
+  });
+};
 
-const createCartRouter = (logger: Logger, carts: DataStore<Cart>, items: DataStore<Item>) => {
+const createCartRouter = (
+  logger: Logger,
+  carts: DataStore<Cart>,
+  items: DataStore<Item>,
+) => {
   const cartRouter = express.Router();
   const promiseRoute = promiseRouteCreator(logger);
 
