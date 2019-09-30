@@ -9,10 +9,7 @@ const createServer = () => {
 
   server.use(bodyParser.json());
 
-  server.use(
-    '/carts',
-    createCartRouter(cartStore, createItemStore()),
-  );
+  server.use('/carts', createCartRouter(cartStore, createItemStore()));
 
   return server;
 };

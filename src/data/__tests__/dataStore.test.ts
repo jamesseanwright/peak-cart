@@ -1,4 +1,7 @@
-import createInMemoryDataStore, { DataStore, MissingRecordError } from '../dataStore';
+import createInMemoryDataStore, {
+  DataStore,
+  MissingRecordError,
+} from '../dataStore';
 import { Cart } from '../cart';
 
 describe('createInMemoryDataStore', () => {
@@ -24,11 +27,10 @@ describe('createInMemoryDataStore', () => {
 
   describe('getById', () => {
     it('should reject with an error if the record could not be found', () => {
-      return dataSource.getById('no')
-        .catch(e => {
-          expect(e).toBeInstanceOf(MissingRecordError);
-          expect(e.message).toBe('Cannot find record with ID "no"');
-        });
+      return dataSource.getById('no').catch(e => {
+        expect(e).toBeInstanceOf(MissingRecordError);
+        expect(e.message).toBe('Cannot find record with ID "no"');
+      });
     });
   });
 });

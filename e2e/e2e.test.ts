@@ -30,7 +30,11 @@ const addToCart = (server: Application, cartId: string, itemId: string) =>
     .send({ id: itemId })
     .set('Accept', 'application/json');
 
-const replaceCartItems = (server: Application, cartId: string, itemIds: string[]) =>
+const replaceCartItems = (
+  server: Application,
+  cartId: string,
+  itemIds: string[],
+) =>
   request(server)
     .put(`/carts/${cartId}/items`)
     .send({ items: itemIds })
@@ -60,7 +64,11 @@ describe('Cart API', () => {
   describe('/carts/:id/items', () => {
     it('should add an item to the cart when requested with HTTP PATCH', async () => {
       const { body } = await createCart(server);
-      const addItemResponse = await addToCart(server, body.id, 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8');
+      const addItemResponse = await addToCart(
+        server,
+        body.id,
+        'a9e9c933-eda2-4f45-92c0-33d6c1b495d8',
+      );
 
       expect(addItemResponse.status).toBe(204);
 
@@ -89,14 +97,20 @@ describe('Cart API', () => {
 
     it('should remove all items when requested with HTTP PUT and an empty array in the body', async () => {
       const { body } = await createCart(server);
-      const addItemResponse = await addToCart(server, body.id, 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8');
+      const addItemResponse = await addToCart(
+        server,
+        body.id,
+        'a9e9c933-eda2-4f45-92c0-33d6c1b495d8',
+      );
 
       expect(addItemResponse.status).toBe(204);
 
       const postAddToCartResponse = await getCartItems(server, body.id);
 
       expect(postAddToCartResponse.status).toBe(200);
-      expect((postAddToCartResponse.body as Item[])[0].title).toBe('The Testaments');
+      expect((postAddToCartResponse.body as Item[])[0].title).toBe(
+        'The Testaments',
+      );
 
       const clearItemsResponse = await replaceCartItems(server, body.id, []);
 
@@ -110,7 +124,9 @@ describe('Cart API', () => {
 
     it('should respond with HTTP 400 when requested with HTTP PUT and a non-empty array', async () => {
       const { body } = await createCart(server);
-      const clearItemsResponse = await replaceCartItems(server, body.id, ['some_id']);
+      const clearItemsResponse = await replaceCartItems(server, body.id, [
+        'some_id',
+      ]);
 
       expect(clearItemsResponse.status).toBe(400);
     });
@@ -142,25 +158,39 @@ describe('Cart API', () => {
       expect(postAddToCartResponse.body[0].title).toBe('The Testaments');
       expect(postAddToCartResponse.body[1].title).toBe('Half a World Away');
 
-      const removeFromCartResponse = await removeFromCart(server, body.id, 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8');
+      const removeFromCartResponse = await removeFromCart(
+        server,
+        body.id,
+        'a9e9c933-eda2-4f45-92c0-33d6c1b495d8',
+      );
 
       expect(removeFromCartResponse.status).toBe(204);
 
       const postRemoveFromCartResponse = await getCartItems(server, body.id);
 
       expect(postRemoveFromCartResponse.body.length).toBe(1);
-      expect(postRemoveFromCartResponse.body[0].title).toBe('Half a World Away');
+      expect(postRemoveFromCartResponse.body[0].title).toBe(
+        'Half a World Away',
+      );
     });
 
     it('should respond with HTTP 404 when the cart cannot be found', async () => {
-      const removeFromCartResponse = await removeFromCart(server, 'unrecognised_basket', 'a9e9c933-eda2-4f45-92c0-33d6c1b495d8');
+      const removeFromCartResponse = await removeFromCart(
+        server,
+        'unrecognised_basket',
+        'a9e9c933-eda2-4f45-92c0-33d6c1b495d8',
+      );
 
       expect(removeFromCartResponse.status).toBe(404);
     });
 
     it('should respond with HTTP 400 when the item cannot be found', async () => {
       const { body } = await createCart(server);
-      const removeFromCartResponse = await removeFromCart(server, body.id, 'unrecognised_item');
+      const removeFromCartResponse = await removeFromCart(
+        server,
+        body.id,
+        'unrecognised_item',
+      );
 
       expect(removeFromCartResponse.status).toBe(400);
     });

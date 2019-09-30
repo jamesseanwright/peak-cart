@@ -4,6 +4,7 @@
   "description": "A microservice for powering an e-commerce shopping cart",
   "main": "dist/index.js",
   "scripts": {
+    "format": "prettier --write jest.config.js e2e/e2e.test.ts 'src/**/*.ts'",
     "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "jest",
     "test:e2e": "MODE=e2e jest"

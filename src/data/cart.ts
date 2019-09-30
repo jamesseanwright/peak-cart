@@ -1,4 +1,4 @@
-import createInMemoryDataStore, { Entity } from "./dataStore";
+import createInMemoryDataStore, { Entity } from './dataStore';
 
 export interface Cart {
   items: Entity[];
