@@ -124,3 +124,7 @@ One can then run these commands:
 * `npm run test:unit`: runs the unit tests (append `-- --watch` to run in Jest's watch mode)
 * `npm run test:e2e`: runs the end-to-end tests (append `-- --watch` to run in Jest's watch mode)
 * `npm test`: runs both the unit and end-to-end suites
+
+## Technical approach
+
+I have written a [standalone document covering my approach](/jamesseanwright/peak-cart/blob/master/APPROACH.md) and its justification.
