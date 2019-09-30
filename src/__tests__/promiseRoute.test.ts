@@ -30,7 +30,10 @@ describe('promiseRouteCreator', () => {
 
     promiseHandler.mockResolvedValue(undefined);
 
-    await handler(request as unknown as Request, response as unknown as Response);
+    await handler(
+      (request as unknown) as Request,
+      (response as unknown) as Response,
+    );
 
     expect(logger).toHaveBeenCalledTimes(1);
     expect(logger).toHaveBeenCalledWith('Request for /foo');
@@ -56,7 +59,10 @@ describe('promiseRouteCreator', () => {
     status.mockReturnValue(response);
     json.mockReturnValue(response);
 
-    await handler(request as unknown as Request, response as unknown as Response);
+    await handler(
+      (request as unknown) as Request,
+      (response as unknown) as Response,
+    );
 
     expect(status).toHaveBeenCalledTimes(1);
     expect(status).toHaveBeenCalledWith(500);
@@ -85,7 +91,10 @@ describe('promiseRouteCreator', () => {
     status.mockReturnValue(response);
     json.mockReturnValue(response);
 
-    await handler(request as unknown as Request, response as unknown as Response);
+    await handler(
+      (request as unknown) as Request,
+      (response as unknown) as Response,
+    );
 
     expect(status).toHaveBeenCalledTimes(1);
     expect(status).toHaveBeenCalledWith(400);
