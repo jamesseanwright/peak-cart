@@ -3,10 +3,7 @@ import { DataStore } from './data/dataStore';
 import { Cart } from './data/cart';
 import { Item } from './data/item';
 import { Logger } from './server';
-
-const createErrorBody = (error: string) => ({
-  error,
-});
+import promiseRouteCreator from './promiseRoute';
 
 export class BadRequestError extends Error {
   get httpStatus() {
@@ -25,23 +22,6 @@ const validateEmptyItems = (items: never[]) =>
   items.length === 0
     ? Promise.resolve()
     : Promise.reject(new BadRequestError('Items array must be empty'));
-
-type PromiseHandler = (req: Request, res: Response) => Promise<unknown>;
-
-const promiseRouteCreator = (logger: Logger) => (handler: PromiseHandler) => (
-  req: Request,
-  res: Response,
-) => {
-  logger(`Request for ${req.path}`);
-
-  return handler(req, res).catch(error => {
-    const { httpStatus = 500, message } = error;
-
-    logger(`Error: ${message}`);
-
-    res.status(httpStatus).json(createErrorBody(error.message));
-  });
-};
 
 const createCartRouter = (
   logger: Logger,
