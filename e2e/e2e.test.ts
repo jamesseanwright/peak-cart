@@ -145,7 +145,7 @@ describe('Cart API', () => {
     });
   });
 
-  describe('/carts/:id/items/:id', () => {
+  describe('/carts/:id/items/:itemId', () => {
     it('should remove the item from the cart when requested with HTTP DELETE', async () => {
       const { body } = await createCart(server);
 
@@ -177,7 +177,7 @@ describe('Cart API', () => {
     it('should respond with HTTP 404 when the cart cannot be found', async () => {
       const removeFromCartResponse = await removeFromCart(
         server,
-        'unrecognised_basket',
+        'unrecognised_cart',
         'a9e9c933-eda2-4f45-92c0-33d6c1b495d8',
       );
 
