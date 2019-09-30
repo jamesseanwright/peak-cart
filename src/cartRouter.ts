@@ -76,8 +76,10 @@ const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
   ));
 
   cartRouter.delete('/:id/items/:itemId', promiseRoute((req, res) =>
-    carts.getById(req.params.id)
-      .then(({ id, model }) => carts.save({
+    Promise.all([
+      carts.getById(req.params.id),
+      items.getById(req.params.itemId).catch(mapToError(BadRequestError)),
+    ]).then(([{ id, model }]) => carts.save({
         items: model.items.filter(item => item.id !== req.params.itemId),
       }, id))
       .then(() => res.status(204).send())
