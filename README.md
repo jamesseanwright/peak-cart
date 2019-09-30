@@ -128,4 +128,4 @@ One can then run these commands:
 
 ## Technical approach
 
-I have written a [standalone document covering my approach](/jamesseanwright/peak-cart/blob/master/APPROACH.md) and its justification.
+I have written a [standalone document covering my approach](https://github.com/jamesseanwright/peak-cart/blob/master/APPROACH.md) and its justification.
