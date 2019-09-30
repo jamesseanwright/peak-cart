@@ -1,6 +1,6 @@
 import createServer from './server';
 
 const port = 8000;
-const server = createServer();
+const server = createServer(console.log);
 
-server.listen(() => console.log(`Server listening on port ${port}...`));
+server.listen(port, () => console.log(`Server listening on port ${port}...`));

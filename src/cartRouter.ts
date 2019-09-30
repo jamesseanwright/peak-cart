@@ -2,8 +2,9 @@ import express, { Request, Response } from 'express';
 import { DataStore } from './data/dataStore';
 import { Cart } from './data/cart';
 import { Item } from './data/item';
+import { Logger } from './server';
 
-const createErrorBody = (error: Error) => ({
+const createErrorBody = (error: string) => ({
   error,
 });
 
@@ -27,18 +28,25 @@ const validateEmptyItems = (items: never[]) =>
 
 type PromiseHandler = (req: Request, res: Response) => Promise<unknown>;
 
-const promiseRoute = (handler: PromiseHandler) => (
-  req: Request,
-  res: Response,
-) =>
-  handler(req, res).catch(error => {
-    const { httpStatus = 500 } = error;
+const promiseRouteCreator = (logger: Logger) =>
+  (handler: PromiseHandler) => (
+    req: Request,
+    res: Response,
+  ) => {
+    logger(`Request for ${req.path}`);
 
-    res.status(httpStatus).send(createErrorBody(error));
-  });
+    return handler(req, res).catch(error => {
+      const { httpStatus = 500, message } = error;
 
-const createCartRouter = (carts: DataStore<Cart>, items: DataStore<Item>) => {
+      logger(`Error: ${message}`);
+
+      res.status(httpStatus).json(createErrorBody(error.message));
+    });
+  };
+
+const createCartRouter = (logger: Logger, carts: DataStore<Cart>, items: DataStore<Item>) => {
   const cartRouter = express.Router();
+  const promiseRoute = promiseRouteCreator(logger);
 
   cartRouter.post(
     '/',
