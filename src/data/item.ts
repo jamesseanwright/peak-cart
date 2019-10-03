@@ -11,7 +11,7 @@ export interface Item {
 }
 
 /* Note we populate the store
- * with hard-coded for
+ * with hard-coded items for
  * deterministic e2e tests. */
 const stubItems: [string, Item][] = [
   [
