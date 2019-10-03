@@ -1,6 +1,6 @@
 # Peak Cart
 
-A microservice that power the shopping cart of an online book store (read: my tech test for Peak), developed with [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/) and [TypeScript](https://www.typescriptlang.org/).
+A microservice that powers the shopping cart of an online book store (read: my tech test for Peak), developed with [Node.js](https://nodejs.org/en/), [Express](https://expressjs.com/) and [TypeScript](https://www.typescriptlang.org/).
 
 ## Endpoints
 
